@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.renren.modules.banana.generator.dao.BananaGoodsDao">
+
+	<!-- 可根据自己的需求，是否要使用 -->
+    <resultMap type="io.renren.modules.banana.generator.entity.BananaGoodsEntity" id="bananaGoodsMap">
+        <result property="goddsid" column="goddsid"/>
+        <result property="title" column="title"/>
+        <result property="pic" column="pic"/>
+        <result property="steps" column="steps"/>
+        <result property="price" column="price"/>
+        <result property="share
+
+sPrice" column="share
+
+s_price"/>
+        <result property="topUpWay" column="top_up_way"/>
+        <result property="exchangeAddress" column="exchange_address"/>
+        <result property="createTime" column="create_time"/>
+        <result property="status" column="status"/>
+    </resultMap>
+
+
+</mapper>
