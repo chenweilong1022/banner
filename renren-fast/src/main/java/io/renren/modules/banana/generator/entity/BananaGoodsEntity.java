@@ -1,5 +1,6 @@
 package io.renren.modules.banana.generator.entity;
 
+import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableName;
 
@@ -34,7 +35,10 @@ public class BananaGoodsEntity implements Serializable {
 	/**
 	 * 步骤富文本
 	 */
-	private unknowType steps;
+	private byte[] steps;
+
+	@TableField(exist = false)
+	private String stepsStr;
 	/**
 	 * 价格
 	 */
@@ -42,9 +46,7 @@ public class BananaGoodsEntity implements Serializable {
 	/**
 	 * 分享价格
 	 */
-	private BigDecimal share
-
-sPrice;
+	private BigDecimal shaPrice;
 	/**
 	 * 充值方式1:卡密2:自动充值3:手动充值
 	 */
@@ -101,13 +103,13 @@ sPrice;
 	/**
 	 * 设置：步骤富文本
 	 */
-	public void setSteps(unknowType steps) {
+	public void setSteps(byte[] steps) {
 		this.steps = steps;
 	}
 	/**
 	 * 获取：步骤富文本
 	 */
-	public unknowType getSteps() {
+	public byte[] getSteps() {
 		return steps;
 	}
 	/**
@@ -122,29 +124,21 @@ sPrice;
 	public BigDecimal getPrice() {
 		return price;
 	}
-	/**
-	 * 设置：分享价格
-	 */
-	public void setShare
 
-sPrice(BigDecimal share
-
-sPrice) {
-		this.share
-
-sPrice = share
-
-sPrice;
+	public String getStepsStr() {
+		return stepsStr;
 	}
-	/**
-	 * 获取：分享价格
-	 */
-	public BigDecimal getShare
 
-sPrice() {
-		return share
+	public void setStepsStr(String stepsStr) {
+		this.stepsStr = stepsStr;
+	}
 
-sPrice;
+	public BigDecimal getShaPrice() {
+		return shaPrice;
+	}
+
+	public void setShaPrice(BigDecimal shaPrice) {
+		this.shaPrice = shaPrice;
 	}
 	/**
 	 * 设置：充值方式1:卡密2:自动充值3:手动充值
