@@ -36,11 +36,12 @@ public class SendSms {
     //无需修改,用于格式化鉴权头域,给"Authorization"参数赋值
     private static final String AUTH_HEADER_VALUE = "WSSE realm=\"SDP\",profile=\"UsernameToken\",type=\"Appkey\"";
 
-//    public static void main(String[] args) {
+    public static void main(String[] args) {
 //        System.out.println(RandomUtil.randomNumbers(6));
-//    }
+        send("17839942480","123456");
+    }
 
-    public static void send(String code) {
+    public static void send(String phone,String code) {
 
         //必填,请参考"开发准备"获取如下数据,替换为实际值
         String url = "https://api.rtc.huaweicloud.com:10443/sms/batchSendSms/v1"; //APP接入地址+接口访问URI
@@ -53,7 +54,7 @@ public class SendSms {
         String signature = "香蕉充值"; //签名名称
 
         //必填,全局号码格式(包含国家码),示例:+8615123456789,多个号码之间用英文逗号分隔
-        String receiver = "+8617638155659"; //短信接收人号码
+        String receiver = "+86" + phone; //短信接收人号码
 
         //选填,短信状态报告接收地址,推荐使用域名,为空或者不填表示不接收状态报告
         String statusCallBack = "";
