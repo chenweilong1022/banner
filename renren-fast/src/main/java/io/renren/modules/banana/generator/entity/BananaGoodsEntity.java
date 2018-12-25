@@ -3,6 +3,8 @@ package io.renren.modules.banana.generator.entity;
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableName;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 
 import java.math.BigDecimal;
 import java.io.Serializable;
@@ -15,6 +17,7 @@ import java.util.Date;
  * @email 1433471850@qq.com
  * @date 2018-12-24 20:54:53
  */
+@ApiModel("商品类")
 @TableName("banana_goods")
 public class BananaGoodsEntity implements Serializable {
 	private static final long serialVersionUID = 1L;
@@ -23,45 +26,56 @@ public class BananaGoodsEntity implements Serializable {
 	 * 商品id
 	 */
 	@TableId
+	@ApiModelProperty(value = "商品id")
 	private Integer goddsid;
 	/**
 	 * 商品名称
 	 */
+	@ApiModelProperty(value = "商品名称")
 	private String title;
 	/**
 	 * 商品图片
 	 */
+	@ApiModelProperty(value = "商品图片")
 	private String pic;
 	/**
 	 * 步骤富文本
 	 */
+	@ApiModelProperty(value = "步骤富文本 字节数组")
 	private byte[] steps;
 
+	@ApiModelProperty(value = "步骤富文本 字符串")
 	@TableField(exist = false)
 	private String stepsStr;
 	/**
 	 * 价格
 	 */
+	@ApiModelProperty(value = "价格")
 	private BigDecimal price;
 	/**
 	 * 分享价格
 	 */
+	@ApiModelProperty(value = "分享价格")
 	private BigDecimal shaPrice;
 	/**
 	 * 充值方式1:卡密2:自动充值3:手动充值
 	 */
+	@ApiModelProperty(value = "充值方式1:卡密2:自动充值3:手动充值")
 	private Integer topUpWay;
 	/**
 	 * 卡密兑换地址--充值官网
 	 */
+	@ApiModelProperty(value = "卡密兑换地址--充值官网")
 	private String exchangeAddress;
 	/**
 	 * 创建时间
 	 */
+	@ApiModelProperty(value = "创建时间")
 	private Date createTime;
 	/**
 	 * 0:正常 -1:下架 -2:删除
 	 */
+	@ApiModelProperty(value = "0:正常 -1:下架 -2:删除")
 	private Integer status;
 
 	/**

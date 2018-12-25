@@ -16,5 +16,7 @@ import java.util.Map;
 public interface BananaOrderService extends IService<BananaOrderEntity> {
 
     PageUtils queryPage(Map<String, Object> params);
+
+    void paySuccess(String code);
 }
 

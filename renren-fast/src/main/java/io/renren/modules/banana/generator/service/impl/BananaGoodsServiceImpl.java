@@ -18,9 +18,17 @@ public class BananaGoodsServiceImpl extends ServiceImpl<BananaGoodsDao, BananaGo
 
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
+        /**
+         * 设置查询商品正常的
+         */
+        BananaGoodsEntity bananaGoodsEntity = new BananaGoodsEntity();
+        bananaGoodsEntity.setStatus(0);
+
+        EntityWrapper<BananaGoodsEntity> bananaGoodsEntityEntityWrapper = new EntityWrapper<>();
+        bananaGoodsEntityEntityWrapper.setEntity(bananaGoodsEntity);
         Page<BananaGoodsEntity> page = this.selectPage(
                 new Query<BananaGoodsEntity>(params).getPage(),
-                new EntityWrapper<BananaGoodsEntity>()
+                bananaGoodsEntityEntityWrapper
         );
 
         return new PageUtils(page);
