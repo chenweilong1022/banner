@@ -2,13 +2,18 @@ package io.renren.modules.app.controller;
 
 
 import cn.hutool.core.util.RandomUtil;
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import io.renren.common.utils.DateUtils;
 import io.renren.common.utils.R;
+import io.renren.common.utils.SendSms;
+import io.renren.common.validator.Assert;
 import io.renren.common.validator.ValidatorUtils;
 import io.renren.modules.app.form.LoginForm;
 import io.renren.modules.app.service.UserService;
 import io.renren.modules.app.utils.JwtUtils;
+import io.renren.modules.banana.generator.entity.BananaOrderEntity;
 import io.renren.modules.banana.generator.entity.BananaUserCaptchaEntity;
+import io.renren.modules.banana.generator.entity.BananaUserEntity;
 import io.renren.modules.banana.generator.service.BananaUserCaptchaService;
 import io.renren.modules.banana.generator.service.BananaUserService;
 import io.swagger.annotations.Api;
@@ -43,34 +48,73 @@ public class AppLoginController {
     /**
      * 登录
      */
-    @PostMapping("login")
-    @ApiOperation("登录")
-    @ApiImplicitParams(
-            @ApiImplicitParam()
-    )
-    public R login(@RequestParam String phone,
-                   @RequestParam String code){
+    @RequestMapping("login")
+    @ApiOperation(value = "登录",notes = "根据手机号验证码登录",httpMethod = "POST")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "phone", value = "手机号", required = false, dataType = "String",paramType = "query"),
+            @ApiImplicitParam(name = "code", value = "验证码", required = false, dataType = "String",paramType = "query"),
+            @ApiImplicitParam(name = "platform", value = "平台", required = false, dataType = "String",paramType = "query"),
+    })
+    public R login(
+                    @RequestParam(required = false) String phone,
+                   @RequestParam(required = false) String code,
+                   @RequestParam(required = false) String platform
+    ){
+
+        Assert.isBlank(phone,"手机号不能为空");
+        Assert.isBlank(code,"验证码不能为空");
+
+        EntityWrapper<BananaUserCaptchaEntity> bananaUserCaptchaEntityEntityWrapper = new EntityWrapper<>();
+        BananaUserCaptchaEntity bananaUserCaptchaEntity = new BananaUserCaptchaEntity();
+        bananaUserCaptchaEntity.setUserPhone(phone);
+        bananaUserCaptchaEntityEntityWrapper.setEntity(bananaUserCaptchaEntity);
+        BananaUserCaptchaEntity userCaptchaEntity = bananaUserCaptchaService.selectOne(bananaUserCaptchaEntityEntityWrapper);
 
 
-        return R.ok();
+        if(!(userCaptchaEntity.getCode().equalsIgnoreCase(code)) || userCaptchaEntity.getExpireTime().getTime() < System.currentTimeMillis()){
+            return R.error("验证码错误或者已过期");
+        }
+
+
+        EntityWrapper<BananaUserEntity> bananaUserEntityEntityWrapper = new EntityWrapper<>();
+        BananaUserEntity bananaUserEntity = new BananaUserEntity();
+        bananaUserEntity.setPhone(phone);
+        bananaUserEntityEntityWrapper.setEntity(bananaUserEntity);
+        BananaUserEntity userEntity = bananaUserService.selectOne(bananaUserEntityEntityWrapper);
+
+        if (userEntity == null) {
+            userEntity = new BananaUserEntity();
+            userEntity.setCreateTime(new Date());
+            userEntity.setPhone(phone);
+            userEntity.setPlatform(platform);
+            bananaUserService.insert(userEntity);
+        }
+
+        return R.data(userEntity);
     }
 
     /**
      * 发送验证码
      */
-    @GetMapping("/sendcode")
-    @ApiOperation("发送验证码")
+    @RequestMapping("sendcode")
+    @ApiOperation(value = "发送验证码",notes = "根据手机号发送验证码",httpMethod = "POST")
     @ApiImplicitParams({
-            @ApiImplicitParam(paramType = "query", dataType = "String", name = "phone", value = "手机号码", required = true)
+            @ApiImplicitParam(name = "phone", value = "手机号", required = false, dataType = "String",paramType = "query"),
     })
-
-    public R login(@RequestParam String phone){
+    public R sendcode(@RequestParam String phone){
         String pattern = "^1[\\d]{10}";
         boolean isMatch = Pattern.matches(pattern, phone);
         if (!isMatch){
             return R.error("手机格式不正确");
         }
         String phoneCode = RandomUtil.randomNumbers(6);
+
+        EntityWrapper<BananaUserCaptchaEntity> bananaUserCaptchaEntityEntityWrapper = new EntityWrapper<>();
+        BananaUserCaptchaEntity userCaptchaEntity = new BananaUserCaptchaEntity();
+        userCaptchaEntity.setUserPhone(phone);
+        bananaUserCaptchaEntityEntityWrapper.setEntity(userCaptchaEntity);
+        bananaUserCaptchaService.delete(bananaUserCaptchaEntityEntityWrapper);
+
 
         BananaUserCaptchaEntity bananaUserCaptchaEntity = new BananaUserCaptchaEntity();
         bananaUserCaptchaEntity.setCode(phoneCode);
@@ -79,7 +123,8 @@ public class AppLoginController {
         bananaUserCaptchaEntity.setExpireTime(DateUtils.addDateMinutes(new Date(), 5));
         bananaUserCaptchaEntity.setCreateTime(new Date());
         bananaUserCaptchaService.insert(bananaUserCaptchaEntity);
-        return R.ok("验证码已发送").put("data",new R().put("code",phoneCode));
+        SendSms.send(phone,phoneCode);
+        return R.ok("验证码已发送").put("data",R.ok().put("code",phoneCode));
     }
 
 
