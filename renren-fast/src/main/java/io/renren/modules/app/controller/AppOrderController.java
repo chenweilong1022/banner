@@ -1,10 +1,13 @@
 package io.renren.modules.app.controller;
 
 
+import cn.hutool.core.util.RandomUtil;
 import cn.hutool.db.sql.Order;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import io.renren.common.utils.AliUtil;
 import io.renren.common.utils.PageUtils;
 import io.renren.common.utils.R;
+import io.renren.common.utils.WechatPayUtil;
 import io.renren.common.validator.Assert;
 import io.renren.common.validator.ValidatorUtils;
 import io.renren.modules.app.form.LoginForm;
@@ -22,9 +25,12 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import io.swagger.models.auth.In;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.HashMap;
@@ -146,6 +152,7 @@ public class AppOrderController {
         bananaOrderEntity.setCreateTime(new Date());//创建时间
         bananaOrderEntity.setIsPay(0);//未支付
         bananaOrderEntity.setGoodsid(goodsid);//商品id
+        bananaOrderEntity.setCode(RandomUtil.simpleUUID());//支付code
         bananaOrderEntity.setTitle(bananaGoodsEntity.getTitle());//商品名称
         bananaOrderEntity.setPic(bananaGoodsEntity.getPic());//商品图片
         bananaOrderEntity.setStatus(0);//状态 0 未充值
@@ -165,10 +172,82 @@ public class AppOrderController {
     /**
      * 支付成功
      */
-    @RequestMapping("paySuccess")
-    public R paySuccess(String code){//支付code
-        bananaOrderService.paySuccess(code);
+//    @RequestMapping("paySuccess")
+//    public R paySuccess(String code){//支付code
+//        bananaOrderService.paySuccess(code);
+//        return R.ok();
+//    }
+
+    @RequestMapping("aliPay")
+    @ApiOperation(value = "生成支付宝参数",notes = "根据订单id返回支付宝支付参数信息",response = BananaOrderEntity.class,httpMethod = "POST")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "orderid", value = "订单id", required = false, dataType = "int",paramType = "query"),
+    })
+    public R aliPay(
+            @RequestParam(required = false) Integer orderid
+    ){
+
+        Assert.isNull(orderid,"orderid不能为空");
+        BananaOrderEntity bananaOrderEntity = bananaOrderService.selectById(orderid);
+        if (bananaOrderEntity == null){
+            return R.error(-1,"订单不存在");
+        }
+        bananaOrderEntity.setPayType(2);//设置支付宝支付
+        bananaOrderService.updateById(bananaOrderEntity);//修改支付宝支付
+        Map map = AliUtil.appOrder("香蕉支付", bananaOrderEntity.getCode(), bananaOrderEntity.getTotalPrice());
+        return R.data(map);
+    }
+
+
+    @RequestMapping("wechatPay")
+    @ApiOperation(value = "生成微信参数",notes = "根据订单id返回微信参数支付参数信息",response = BananaOrderEntity.class,httpMethod = "POST")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "orderid", value = "订单id", required = false, dataType = "nt",paramType = "query"),
+    })
+    public R wechatPay(
+            @RequestParam(required = false) Integer orderid
+    ){
+        Assert.isNull(orderid,"orderid不能为空");
+        BananaOrderEntity bananaOrderEntity = bananaOrderService.selectById(orderid);
+        if (bananaOrderEntity == null){
+            return R.error(-1,"订单不存在");
+        }
+
+        bananaOrderEntity.setPayType(1);//设置微信支付
+        bananaOrderService.updateById(bananaOrderEntity);//修改为微信支付
+        Map<String, Object> map = WechatPayUtil.appOrder("香蕉支付", bananaOrderEntity.getCode(), bananaOrderEntity.getTotalPrice());
+        return R.data(map);
+    }
+
+    @RequestMapping("aliSuccess")
+    public R aliSuccess(
+            HttpServletRequest request
+    ){
+        try {
+            String code = AliUtil.payBack(request);
+            if (code == null) {
+                return R.error(-1,"支付异常");
+            }
+            bananaOrderService.paySuccess(code);
+        } catch (IOException e) {
+        }
         return R.ok();
     }
+
+    @RequestMapping("wechatSuccess")
+    public R wechatSuccess(
+            HttpServletRequest request
+    ){
+        try {
+            String code = WechatPayUtil.payBack(request);
+            if (code == null) {
+                return R.error(-1,"支付异常");
+            }
+            bananaOrderService.paySuccess(code);
+        } catch (IOException e) {
+        }
+        return R.ok();
+    }
+
 
 }

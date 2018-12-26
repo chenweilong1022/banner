@@ -6,6 +6,10 @@ import com.egzosn.pay.common.bean.PayOrder;
 import com.egzosn.pay.wx.api.WxPayConfigStorage;
 import com.egzosn.pay.wx.api.WxPayService;
 import com.egzosn.pay.wx.bean.WxTransactionType;
+import io.renren.config.AliConfig;
+import io.renren.config.WechatConfig;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
@@ -13,19 +17,20 @@ import java.math.BigDecimal;
 import java.util.Map;
 import java.util.UUID;
 
+
 public class WechatPayUtil {
+
+
+    private static  WechatConfig wechatConfig = SpringUtils.getBean(WechatConfig.class);
 
     private static final WxPayConfigStorage WX_PAY_CONFIG_STORAGE = new WxPayConfigStorage();//微信配置类
     private static WxPayService service;//
     private static PayOrder payOrder = new PayOrder();//订单配置
-    private static String NotifyUrl = "http://wojia.xiaoyuancms.cn/user/rechargeSuccess";
     static {
-        WX_PAY_CONFIG_STORAGE.setMchId("");
-        WX_PAY_CONFIG_STORAGE.setAppid("");
-//        wxPayConfigStorage.setKeyPublic("hmyz2018070313145201231231231231");
-//        wxPayConfigStorage.setKeyPrivate("hmyz2018070313145201231231231231");
-        WX_PAY_CONFIG_STORAGE.setSecretKey("");
-        WX_PAY_CONFIG_STORAGE.setNotifyUrl("http://wojia.xiaoyuancms.cn/user/rechargeSuccess1");
+        WX_PAY_CONFIG_STORAGE.setMchId(wechatConfig.getMchId());
+        WX_PAY_CONFIG_STORAGE.setAppid(wechatConfig.getAppid());
+        WX_PAY_CONFIG_STORAGE.setSecretKey(wechatConfig.getSecretKey());
+        WX_PAY_CONFIG_STORAGE.setNotifyUrl(wechatConfig.getNotifyUrl());
 //        wxPayConfigStorage.setReturnUrl("同步回调地址");
         WX_PAY_CONFIG_STORAGE.setSignType("MD5");
         WX_PAY_CONFIG_STORAGE.setInputCharset("utf-8");
@@ -39,15 +44,13 @@ public class WechatPayUtil {
      * @param price
      * @return
      */
-    public static Map appOrder(String body,String orderId,BigDecimal price,Integer notify) {
+    public static Map appOrder(String body,String orderId,BigDecimal price) {
         payOrder.setBody("");
         payOrder.setSubject(body);
         payOrder.setPrice(price);
         payOrder.setOutTradeNo(orderId);
         payOrder.setTransactionType(WxTransactionType.APP);
 //        JSONObject order = service.unifiedOrder(payOrder);
-        WxPayConfigStorage payConfigStorage = service.getPayConfigStorage();
-        payConfigStorage.setNotifyUrl(NotifyUrl + notify);
         Map<String, Object> map = service.orderInfo(payOrder);
         return map;
     }
