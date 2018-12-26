@@ -2,6 +2,11 @@
   "hints": [],
   "groups": [
     {
+      "sourceType": "io.renren.config.AliConfig",
+      "name": "ali",
+      "type": "io.renren.config.AliConfig"
+    },
+    {
       "sourceType": "io.renren.modules.app.utils.JwtUtils",
       "name": "renren.jwt",
       "type": "io.renren.modules.app.utils.JwtUtils"
@@ -17,9 +22,39 @@
       "name": "spring.datasource.druid.second",
       "sourceMethod": "secondDataSource()",
       "type": "javax.sql.DataSource"
+    },
+    {
+      "sourceType": "io.renren.config.WechatConfig",
+      "name": "wechat",
+      "type": "io.renren.config.WechatConfig"
     }
   ],
   "properties": [
+    {
+      "sourceType": "io.renren.config.AliConfig",
+      "name": "ali.app-id",
+      "type": "java.lang.String"
+    },
+    {
+      "sourceType": "io.renren.config.AliConfig",
+      "name": "ali.key-private",
+      "type": "java.lang.String"
+    },
+    {
+      "sourceType": "io.renren.config.AliConfig",
+      "name": "ali.key-private-cert-pwd",
+      "type": "java.lang.String"
+    },
+    {
+      "sourceType": "io.renren.config.AliConfig",
+      "name": "ali.key-public",
+      "type": "java.lang.String"
+    },
+    {
+      "sourceType": "io.renren.config.AliConfig",
+      "name": "ali.notify-url",
+      "type": "java.lang.String"
+    },
     {
       "sourceType": "io.renren.modules.app.utils.JwtUtils",
       "defaultValue": 0,
@@ -34,6 +69,26 @@
     {
       "sourceType": "io.renren.modules.app.utils.JwtUtils",
       "name": "renren.jwt.secret",
+      "type": "java.lang.String"
+    },
+    {
+      "sourceType": "io.renren.config.WechatConfig",
+      "name": "wechat.appid",
+      "type": "java.lang.String"
+    },
+    {
+      "sourceType": "io.renren.config.WechatConfig",
+      "name": "wechat.mch-id",
+      "type": "java.lang.String"
+    },
+    {
+      "sourceType": "io.renren.config.WechatConfig",
+      "name": "wechat.notify-url",
+      "type": "java.lang.String"
+    },
+    {
+      "sourceType": "io.renren.config.WechatConfig",
+      "name": "wechat.secret-key",
       "type": "java.lang.String"
     }
   ]

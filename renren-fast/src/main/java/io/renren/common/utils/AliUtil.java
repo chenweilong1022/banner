@@ -6,6 +6,10 @@ import com.egzosn.pay.ali.bean.AliTransactionType;
 import com.egzosn.pay.common.bean.PayOrder;
 import com.egzosn.pay.common.http.HttpConfigStorage;
 import com.egzosn.pay.common.http.UriVariables;
+import io.renren.config.AliConfig;
+import io.renren.config.WechatConfig;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
@@ -15,19 +19,20 @@ import java.util.UUID;
 
 public class AliUtil {
 
+    private static  AliConfig aliConfig = SpringUtils.getBean(AliConfig.class);
+
     private static final AliPayConfigStorage aliPayConfigStorage = new AliPayConfigStorage();
     private static final HttpConfigStorage httpConfigStorage = new HttpConfigStorage();
     private static final AliPayService service;
-    private static String NotifyUrl = "http://wojia.xiaoyuancms.cn/user/rechargeSuccess";
     private static PayOrder payOrder = new PayOrder();
     static {
         AliPayConfigStorage aliPayConfigStorage = new AliPayConfigStorage();
 //        aliPayConfigStorage.setPid(AlipayConfig.appid);
-        aliPayConfigStorage.setAppId("");
-        aliPayConfigStorage.setKeyPublic("");
-        aliPayConfigStorage.setKeyPrivate("");
-        aliPayConfigStorage.setNotifyUrl("http://wojia.xiaoyuancms.cn/user/rechargeSuccess2");
-        aliPayConfigStorage.setKeyPrivateCertPwd("");
+        aliPayConfigStorage.setAppId(aliConfig.getAppId());
+        aliPayConfigStorage.setKeyPublic(aliConfig.getKeyPublic());
+        aliPayConfigStorage.setKeyPrivate(aliConfig.getKeyPrivate());
+        aliPayConfigStorage.setNotifyUrl(aliConfig.getNotifyUrl());
+        aliPayConfigStorage.setKeyPrivateCertPwd(aliConfig.getKeyPrivateCertPwd());
 //        aliPayConfigStorage.setReturnUrl("同步回调地址");
         aliPayConfigStorage.setSignType("RSA2");
 //        aliPayConfigStorage.setSeller("收款账号");
@@ -41,7 +46,7 @@ public class AliUtil {
         service = new AliPayService(aliPayConfigStorage,httpConfigStorage);
     }
 
-    public static String appOrder(String body,String orderId,BigDecimal price,Integer notify) {
+    public static Map<String, Object> appOrder(String body, String orderId, BigDecimal price) {
         PayOrder payOrder = new PayOrder();
         payOrder.setSubject(body);
         payOrder.setBody("");
@@ -49,9 +54,8 @@ public class AliUtil {
         payOrder.setOutTradeNo(orderId);
         payOrder.setTransactionType(AliTransactionType.APP);
 
-        AliPayConfigStorage payConfigStorage = service.getPayConfigStorage();
-        payConfigStorage.setNotifyUrl(NotifyUrl + notify);
-        String order = UriVariables.getMapToParameters(service.orderInfo(payOrder));
+//        String order = UriVariables.getMapToParameters(service.orderInfo(payOrder));
+        Map<String, Object> order = service.orderInfo(payOrder);
         return order;
     }
 
