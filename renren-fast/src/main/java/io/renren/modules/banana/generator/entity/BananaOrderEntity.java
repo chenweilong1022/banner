@@ -1,7 +1,10 @@
 package io.renren.modules.banana.generator.entity;
 
+import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableName;
+import io.renren.common.utils.SpringUtils;
+import io.renren.modules.banana.generator.service.BananaUserService;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 
@@ -112,6 +115,8 @@ public class BananaOrderEntity implements Serializable {
 	 */
 	@ApiModelProperty(value = "用户id")
 	private Integer userId;
+	@TableField(exist = false)
+	private BananaUserEntity bananaUserEntity;
 
 	/**
 	 * 设置：订单id
@@ -320,5 +325,17 @@ public class BananaOrderEntity implements Serializable {
 
 	public void setUserId(Integer userId) {
 		this.userId = userId;
+	}
+
+	public BananaUserEntity getBananaUserEntity() {
+		if (userId != null) {
+            BananaUserService bananaUserService = SpringUtils.getBean(BananaUserService.class);
+            return bananaUserService.selectById(userId);
+        }
+		return bananaUserEntity;
+	}
+
+	public void setBananaUserEntity(BananaUserEntity bananaUserEntity) {
+		this.bananaUserEntity = bananaUserEntity;
 	}
 }

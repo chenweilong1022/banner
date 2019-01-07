@@ -4,13 +4,13 @@ spring:
         driverClassName: com.mysql.jdbc.Driver
         druid:
             first:
-                url: jdbc:mysql://localhost:3306/renren_fast?allowMultiQueries=true&useUnicode=true&characterEncoding=UTF-8
-                username: renren
-                password: 123456
+                url: jdbc:mysql://172.17.0.3:3306/renren_fast?allowMultiQueries=true&useUnicode=true&characterEncoding=UTF-8&serverTimezone=GMT
+                username: root
+                password: xiangjiao
             second:
-                url: jdbc:mysql://localhost:3306/renren_fast?allowMultiQueries=true&useUnicode=true&characterEncoding=UTF-8
-                username: renren
-                password: 123456
+                url: jdbc:mysql://172.17.0.3:3306/renren_fast?allowMultiQueries=true&useUnicode=true&characterEncoding=UTF-8&serverTimezone=GMT
+                username: root
+                password: xiangjiao
             initial-size: 10
             max-active: 100
             min-idle: 10
@@ -36,3 +36,7 @@ spring:
                 wall:
                     config:
                         multi-statement-allow: true
+file:
+    upload:
+        baseurl: http://123.207.37.241/file/
+        saveurl: /upload/image/

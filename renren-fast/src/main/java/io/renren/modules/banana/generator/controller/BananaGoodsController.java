@@ -1,6 +1,8 @@
 package io.renren.modules.banana.generator.controller;
 
 import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -34,6 +36,16 @@ public class BananaGoodsController {
     /**
      * 列表
      */
+    @RequestMapping("/listAll")
+    @RequiresPermissions("generator:bananagoods:list")
+    public R listAll(@RequestParam Map<String, Object> params){
+        List<BananaGoodsEntity> bananaGoodsEntities = bananaGoodsService.selectList(null);
+        return R.data(bananaGoodsEntities);
+    }
+
+    /**
+     * 列表
+     */
     @RequestMapping("/list")
     @RequiresPermissions("generator:bananagoods:list")
     public R list(@RequestParam Map<String, Object> params){
@@ -60,8 +72,8 @@ public class BananaGoodsController {
     @RequestMapping("/save")
     @RequiresPermissions("generator:bananagoods:save")
     public R save(@RequestBody BananaGoodsEntity bananaGoods){
-			bananaGoodsService.insert(bananaGoods);
-
+        bananaGoods.setCreateTime(new Date());
+        bananaGoodsService.insert(bananaGoods);
         return R.ok();
     }
 

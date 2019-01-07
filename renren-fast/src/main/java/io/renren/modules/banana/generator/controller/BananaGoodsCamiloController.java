@@ -1,8 +1,11 @@
 package io.renren.modules.banana.generator.controller;
 
 import java.util.Arrays;
+import java.util.Date;
 import java.util.Map;
 
+import io.renren.modules.banana.generator.entity.BananaGoodsEntity;
+import io.renren.modules.banana.generator.service.BananaGoodsService;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -30,6 +33,8 @@ import io.renren.common.utils.R;
 public class BananaGoodsCamiloController {
     @Autowired
     private BananaGoodsCamiloService bananaGoodsCamiloService;
+    @Autowired
+    private BananaGoodsService bananaGoodsService;
 
     /**
      * 列表
@@ -60,8 +65,11 @@ public class BananaGoodsCamiloController {
     @RequestMapping("/save")
     @RequiresPermissions("generator:bananagoodscamilo:save")
     public R save(@RequestBody BananaGoodsCamiloEntity bananaGoodsCamilo){
-			bananaGoodsCamiloService.insert(bananaGoodsCamilo);
-
+        BananaGoodsEntity bananaGoodsEntity = bananaGoodsService.selectById(bananaGoodsCamilo.getGoodsId());
+        bananaGoodsCamilo.setGoodsName(bananaGoodsEntity.getTitle());
+        bananaGoodsCamilo.setStatus(0);
+        bananaGoodsCamilo.setCreateTime(new Date());
+        bananaGoodsCamiloService.insert(bananaGoodsCamilo);
         return R.ok();
     }
 
@@ -71,7 +79,9 @@ public class BananaGoodsCamiloController {
     @RequestMapping("/update")
     @RequiresPermissions("generator:bananagoodscamilo:update")
     public R update(@RequestBody BananaGoodsCamiloEntity bananaGoodsCamilo){
-			bananaGoodsCamiloService.updateById(bananaGoodsCamilo);
+        BananaGoodsEntity bananaGoodsEntity = bananaGoodsService.selectById(bananaGoodsCamilo.getGoodsId());
+        bananaGoodsCamilo.setGoodsName(bananaGoodsEntity.getTitle());
+        bananaGoodsCamiloService.updateById(bananaGoodsCamilo);
 
         return R.ok();
     }

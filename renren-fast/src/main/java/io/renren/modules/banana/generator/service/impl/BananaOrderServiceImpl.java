@@ -1,5 +1,6 @@
 package io.renren.modules.banana.generator.service.impl;
 
+import cn.hutool.core.util.StrUtil;
 import io.renren.modules.banana.generator.entity.BananaGoodsCamiloEntity;
 import io.renren.modules.banana.generator.service.BananaGoodsCamiloService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,9 +29,22 @@ public class BananaOrderServiceImpl extends ServiceImpl<BananaOrderDao, BananaOr
     @Override
     public PageUtils queryPage(Map<String, Object> params) {
         EntityWrapper<BananaOrderEntity> bananaOrderEntityEntityWrapper = new EntityWrapper<>();
-        bananaOrderEntityEntityWrapper.eq("user_id",params.get("userId"));
+        if (params.containsKey("userId")) {
+            bananaOrderEntityEntityWrapper.eq("user_id",params.get("userId"));
+        }
+
+
+        if (params.containsKey("topUpWay") && !StrUtil.isBlank(String.valueOf(params.get("topUpWay"))) ) {
+            bananaOrderEntityEntityWrapper.eq("top_up_way",params.get("topUpWay"));
+        }
+
+        if (params.containsKey("key") && !StrUtil.isBlank(String.valueOf(params.get("key"))) ) {
+            bananaOrderEntityEntityWrapper.like("title",String.valueOf(params.get("key")));
+        }
+
         bananaOrderEntityEntityWrapper.eq("is_pay",1);
         bananaOrderEntityEntityWrapper.orderBy("paytime",false);
+
         Page<BananaOrderEntity> page = this.selectPage(
                 new Query<BananaOrderEntity>(params).getPage(),
                 bananaOrderEntityEntityWrapper

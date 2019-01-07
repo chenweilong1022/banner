@@ -36,8 +36,13 @@ public class BananaGoodsEntity implements Serializable {
 	/**
 	 * 商品图片
 	 */
-	@ApiModelProperty(value = "商品图片")
+	@ApiModelProperty(value = "商品详情页图片")
 	private String pic;
+	/**
+	 * 商品图片
+	 */
+	@ApiModelProperty(value = "商品列表页图片")
+	private String indexPic;
 	/**
 	 * 步骤富文本
 	 */
@@ -77,6 +82,26 @@ public class BananaGoodsEntity implements Serializable {
 	 */
 	@ApiModelProperty(value = "0:正常 -1:下架 -2:删除")
 	private Integer status;
+	/**
+	 * 分享url
+	 */
+	@ApiModelProperty(value = "分享url")
+	private String shareUrl;
+	/**
+	 * 分享标题
+	 */
+	@ApiModelProperty(value = "分享标题")
+	private String shareTitle;
+	/**
+	 * 分享描述
+	 */
+	@ApiModelProperty(value = "分享描述")
+	private String shareDesc;
+	/**
+	 * 提示内容
+	 */
+	@ApiModelProperty(value = "提示内容")
+	private String prompt;
 
 	/**
 	 * 设置：商品id
@@ -201,5 +226,45 @@ public class BananaGoodsEntity implements Serializable {
 	 */
 	public Integer getStatus() {
 		return status;
+	}
+
+	public String getShareUrl() {
+		return shareUrl;
+	}
+
+	public void setShareUrl(String shareUrl) {
+		this.shareUrl = shareUrl;
+	}
+
+	public String getShareTitle() {
+		return shareTitle;
+	}
+
+	public void setShareTitle(String shareTitle) {
+		this.shareTitle = shareTitle;
+	}
+
+	public String getShareDesc() {
+		return shareDesc;
+	}
+
+	public void setShareDesc(String shareDesc) {
+		this.shareDesc = shareDesc;
+	}
+
+	public String getPrompt() {
+		return prompt;
+	}
+
+	public void setPrompt(String prompt) {
+		this.prompt = prompt;
+	}
+
+	public String getIndexPic() {
+		return indexPic;
+	}
+
+	public void setIndexPic(String indexPic) {
+		this.indexPic = indexPic;
 	}
 }

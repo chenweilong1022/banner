@@ -57,6 +57,25 @@ public class AppOrderController {
     @Autowired
     private BananaUserService  bananaUserService;
 
+
+
+    /**
+     * 订单列表分页
+     */
+    @RequestMapping("info")
+    @ApiOperation(value = "查询订单信息",notes = "根据订单id查询订单信息",response = BananaOrderEntity.class,httpMethod = "POST")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "orderid", value = "订单id", required = false, dataType = "int",paramType = "query"),
+    })
+    public R info(
+            @RequestParam(required = false) Integer orderid//订单id不能为空
+    ){
+        Assert.isNull(orderid,"订单id不能为空");
+        BananaOrderEntity bananaOrderEntity = bananaOrderService.selectById(orderid);
+        return R.data(bananaOrderEntity);
+    }
+
+
     /**
      * 订单列表分页
      */
@@ -107,7 +126,7 @@ public class AppOrderController {
             @RequestParam(defaultValue = "0",required = false) Integer isShare//是否分享 0 未分享 1 已经分享
                          ){
 
-        Assert.isBlank(account,"充值账号不能为空");
+//        Assert.isBlank(account,"充值账号不能为空");
         Assert.isNull(userId,"userId不能为空");
         Assert.isNull(goodsid,"goodsid不能为空");
         Assert.isNull(count,"count不能为空");

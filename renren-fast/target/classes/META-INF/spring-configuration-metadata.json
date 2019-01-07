@@ -7,6 +7,11 @@
       "type": "io.renren.config.AliConfig"
     },
     {
+      "sourceType": "io.renren.config.FileConfig",
+      "name": "file.upload",
+      "type": "io.renren.config.FileConfig"
+    },
+    {
       "sourceType": "io.renren.modules.app.utils.JwtUtils",
       "name": "renren.jwt",
       "type": "io.renren.modules.app.utils.JwtUtils"
@@ -53,6 +58,16 @@
     {
       "sourceType": "io.renren.config.AliConfig",
       "name": "ali.notify-url",
+      "type": "java.lang.String"
+    },
+    {
+      "sourceType": "io.renren.config.FileConfig",
+      "name": "file.upload.baseurl",
+      "type": "java.lang.String"
+    },
+    {
+      "sourceType": "io.renren.config.FileConfig",
+      "name": "file.upload.saveurl",
       "type": "java.lang.String"
     },
     {

@@ -22,9 +22,11 @@ public class BananaGoodsServiceImpl extends ServiceImpl<BananaGoodsDao, BananaGo
          * 设置查询商品正常的
          */
         BananaGoodsEntity bananaGoodsEntity = new BananaGoodsEntity();
-        bananaGoodsEntity.setStatus(0);
+//        bananaGoodsEntity.setStatus(0);
 
         EntityWrapper<BananaGoodsEntity> bananaGoodsEntityEntityWrapper = new EntityWrapper<>();
+        bananaGoodsEntityEntityWrapper.in("status","0,-1");
+        bananaGoodsEntityEntityWrapper.orderBy("create_time",false);
         bananaGoodsEntityEntityWrapper.setEntity(bananaGoodsEntity);
         Page<BananaGoodsEntity> page = this.selectPage(
                 new Query<BananaGoodsEntity>(params).getPage(),
