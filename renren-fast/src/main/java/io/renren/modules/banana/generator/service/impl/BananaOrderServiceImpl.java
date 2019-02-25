@@ -70,18 +70,20 @@ public class BananaOrderServiceImpl extends ServiceImpl<BananaOrderDao, BananaOr
         bananaOrderEntity.setPaytime(new Date());
         if (bananaOrderEntity.getTopUpWay() == 1) {//卡密发放方式
 
-            EntityWrapper<BananaGoodsCamiloEntity> bananaGoodsCamiloEntityEntityWrapper = new EntityWrapper<>();
-            BananaGoodsCamiloEntity bananaGoodsCamiloEntity = new BananaGoodsCamiloEntity();
-            bananaGoodsCamiloEntity.setGoodsId(bananaOrderEntity.getGoodsid());//商品id
-            bananaGoodsCamiloEntity.setStatus(0);//未发放
-            bananaGoodsCamiloEntityEntityWrapper.setEntity(bananaGoodsCamiloEntity);
-            bananaGoodsCamiloEntityEntityWrapper.last(" limit 0,1");
-            BananaGoodsCamiloEntity bananaGoodsCamiloEntity1 = bananaGoodsCamiloService.selectOne(bananaGoodsCamiloEntityEntityWrapper);
-
-            bananaGoodsCamiloEntity1.setStatus(1);
-            bananaGoodsCamiloService.updateById(bananaGoodsCamiloEntity1);
-            bananaOrderEntity.setPassword(bananaGoodsCamiloEntity1.getCamilo());
-
+            String passwords = "";
+            for (int i = 0; i < bananaOrderEntity.getCount().intValue(); i++) {
+                EntityWrapper<BananaGoodsCamiloEntity> bananaGoodsCamiloEntityEntityWrapper = new EntityWrapper<>();
+                BananaGoodsCamiloEntity bananaGoodsCamiloEntity = new BananaGoodsCamiloEntity();
+                bananaGoodsCamiloEntity.setGoodsId(bananaOrderEntity.getGoodsid());//商品id
+                bananaGoodsCamiloEntity.setStatus(0);//未发放
+                bananaGoodsCamiloEntityEntityWrapper.setEntity(bananaGoodsCamiloEntity);
+                bananaGoodsCamiloEntityEntityWrapper.last(" limit 0,1");
+                BananaGoodsCamiloEntity bananaGoodsCamiloEntity1 = bananaGoodsCamiloService.selectOne(bananaGoodsCamiloEntityEntityWrapper);
+                passwords = passwords + bananaGoodsCamiloEntity1.getCamilo() + (i == bananaOrderEntity.getCount().intValue()-1?"":",");
+                bananaGoodsCamiloEntity1.setStatus(1);
+                bananaGoodsCamiloService.updateById(bananaGoodsCamiloEntity1);
+            }
+            bananaOrderEntity.setPassword(passwords);
         }
 
         this.updateById(bananaOrderEntity);

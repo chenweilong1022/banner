@@ -1,6 +1,7 @@
 package io.renren.modules.app.controller;
 
 
+import cn.hutool.core.date.DateUtil;
 import cn.hutool.core.util.RandomUtil;
 import cn.hutool.db.sql.Order;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
@@ -68,7 +69,7 @@ public class AppOrderController {
             @ApiImplicitParam(name = "orderid", value = "订单id", required = false, dataType = "int",paramType = "query"),
     })
     public R info(
-            @RequestParam(required = false) Integer orderid//订单id不能为空
+            @RequestParam(required = false) String orderid//订单id不能为空
     ){
         Assert.isNull(orderid,"订单id不能为空");
         BananaOrderEntity bananaOrderEntity = bananaOrderService.selectById(orderid);
@@ -165,6 +166,9 @@ public class AppOrderController {
 
         BananaOrderEntity bananaOrderEntity = new BananaOrderEntity();
 
+
+        String orderid = "10" + RandomUtil.randomNumbers(9);
+        bananaOrderEntity.setOrderid(orderid);
         bananaOrderEntity.setAccount(account);//充值账号
         bananaOrderEntity.setUserId(userId);//用户id
         bananaOrderEntity.setCount(count);//数量
@@ -203,7 +207,7 @@ public class AppOrderController {
             @ApiImplicitParam(name = "orderid", value = "订单id", required = false, dataType = "int",paramType = "query"),
     })
     public R aliPay(
-            @RequestParam(required = false) Integer orderid
+            @RequestParam(required = false) String orderid
     ){
 
         Assert.isNull(orderid,"orderid不能为空");
@@ -213,7 +217,7 @@ public class AppOrderController {
         }
         bananaOrderEntity.setPayType(2);//设置支付宝支付
         bananaOrderService.updateById(bananaOrderEntity);//修改支付宝支付
-        Map map = AliUtil.appOrder("香蕉支付", bananaOrderEntity.getCode(), bananaOrderEntity.getTotalPrice());
+        String map = AliUtil.appOrder("香蕉支付", bananaOrderEntity.getCode(), bananaOrderEntity.getTotalPrice());
         return R.data(map);
     }
 
@@ -224,7 +228,7 @@ public class AppOrderController {
             @ApiImplicitParam(name = "orderid", value = "订单id", required = false, dataType = "nt",paramType = "query"),
     })
     public R wechatPay(
-            @RequestParam(required = false) Integer orderid
+            @RequestParam(required = false) String orderid
     ){
         Assert.isNull(orderid,"orderid不能为空");
         BananaOrderEntity bananaOrderEntity = bananaOrderService.selectById(orderid);

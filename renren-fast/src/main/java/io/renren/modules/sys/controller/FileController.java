@@ -61,86 +61,48 @@ public class FileController extends AbstractController {
 	@Autowired
 	private FileConfig fileConfig;
 
+	/**
+	 * 上传文件
+	 */
+	@RequestMapping("/upload")
+	public R upload(@RequestBody MultipartFile file, HttpServletRequest request) throws Exception {
+
+		if (file.isEmpty()) {
+			throw new RRException("上传文件不能为空");
+		}
+
+		String fileName = RandomUtil.simpleUUID() + "." + FileUtil.extName(file.getOriginalFilename());
+		String saveurl = fileConfig.getSaveurl();
+		File saveFile = new File(saveurl, fileName);
+
+// 		FileCopyUtils.copy(file.getInputStream(),saveFile);
+		FileUtils.copyToFile(file.getInputStream(),saveFile);
+		String url = fileConfig.getBaseurl() + fileName;
+
+
+
+		return R.data(url);
+	}
 
 	@RequestMapping("/")
 	private String showPage(){
 		return "index";
 	}
 
-//	private Logger logger = LoggerFactory.getLogger(UeditorController.class);
-
-	private String rootPath;
-
-	private String projectPath = null;
-
-	@Autowired
-	private Environment environment;
-
-
-	private final static String staticPath = "static/";
-
-	public FileController() {
-		String path  = FileController.class.getClassLoader().getResource("config.json").getPath();
-		logger.info("path->"+path);
-		File file =  new File(path);
-		if(file.getParentFile().isDirectory()) {
-			rootPath = new File(path).getParent()+"/";
-		}else{
-			rootPath = new File(path).getParentFile().getParent()+"/";
-			rootPath = rootPath.replace("file:","");
+	@RequestMapping(value="/config")
+	public void config(HttpServletRequest request, HttpServletResponse response) {
+		response.setContentType("application/json");
+		String rootPath = request.getSession().getServletContext().getRealPath("/");
+		try {
+			String exec = new ActionEnter(request, rootPath).exec();
+			PrintWriter writer = response.getWriter();
+			writer.write(exec);
+			writer.flush();
+			writer.close();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
-	}
 
-
-	private String getProjectPath(){
-		if(null==projectPath) {
-			String val = environment.getProperty("server.context-path", "");
-			if ("".equals(val)) {
-				val = environment.getProperty("server.contextPath", "");
-				if ("".equals(val)) {
-					projectPath = "";
-					return projectPath;
-				}
-			}
-			projectPath = val.replace("/", "") + "/";
-		}
-		return projectPath;
-	}
-
-	@RequestMapping("/exec")
-	public void exec(HttpServletRequest request, HttpServletResponse response, PrintWriter out){
-		response.setHeader("Content-Type" , "text/html");
-		logger.info("rootPath->"+rootPath+",staticPath->"+staticPath+",projectPath->"+getProjectPath());
-		out.write( new ActionEnter( request, rootPath,staticPath,getProjectPath()).exec());
-	}
-
-
-	/**
-	 * 上传文件
-	 */
-	@RequestMapping("/upload")
-	public String upload(@RequestBody MultipartFile file, HttpServletRequest request) throws Exception {
-
-		if (file == null) {
-			String realPath = request.getServletContext().getRealPath("/");
-			return new ActionEnter( request, realPath ).exec();
-		}
-		return null;
-//		if (file.isEmpty()) {
-//			throw new RRException("上传文件不能为空");
-//		}
-//
-//		String fileName = RandomUtil.simpleUUID() + "." + FileUtil.extName(file.getOriginalFilename());
-//		String saveurl = fileConfig.getSaveurl();
-//		File saveFile = new File(saveurl, fileName);
-//
-//// 		FileCopyUtils.copy(file.getInputStream(),saveFile);
-//		FileUtils.copyToFile(file.getInputStream(),saveFile);
-//		String url = fileConfig.getBaseurl() + fileName;
-//
-//
-//
-//		return R.data(url);
 	}
 
 }

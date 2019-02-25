@@ -3,6 +3,7 @@ package io.renren.modules.banana.generator.entity;
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableName;
+import com.baomidou.mybatisplus.enums.IdType;
 import io.renren.common.utils.SpringUtils;
 import io.renren.modules.banana.generator.service.BananaUserService;
 import io.swagger.annotations.ApiModel;
@@ -27,9 +28,9 @@ public class BananaOrderEntity implements Serializable {
 	/**
 	 * 订单id
 	 */
-	@TableId
+	@TableId(type = IdType.ID_WORKER)
 	@ApiModelProperty(value = "orderid")
-	private Integer orderid;
+	private String orderid;
 	/**
 	 * 订单商品id
 	 */
@@ -121,13 +122,13 @@ public class BananaOrderEntity implements Serializable {
 	/**
 	 * 设置：订单id
 	 */
-	public void setOrderid(Integer orderid) {
+	public void setOrderid(String orderid) {
 		this.orderid = orderid;
 	}
 	/**
 	 * 获取：订单id
 	 */
-	public Integer getOrderid() {
+	public String getOrderid() {
 		return orderid;
 	}
 	/**

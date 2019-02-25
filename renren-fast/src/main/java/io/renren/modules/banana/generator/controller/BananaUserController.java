@@ -1,8 +1,12 @@
 package io.renren.modules.banana.generator.controller;
 
 import java.util.Arrays;
+import java.util.Date;
 import java.util.Map;
 
+import cn.hutool.core.date.DateUtil;
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import io.renren.common.utils.SpringUtils;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -39,7 +43,12 @@ public class BananaUserController {
     public R list(@RequestParam Map<String, Object> params){
         PageUtils page = bananaUserService.queryPage(params);
 
-        return R.ok().put("page", page);
+        BananaUserService bananaUserService = SpringUtils.getBean(BananaUserService.class);
+        EntityWrapper<BananaUserEntity> bananaUserEntityEntityWrapper = new EntityWrapper<>();
+        bananaUserEntityEntityWrapper.where("last_time > {0}", DateUtil.format(new Date(),"yyyy-MM") + "-01 00:00:00");
+        int i = bananaUserService.selectCount(bananaUserEntityEntityWrapper);
+
+        return R.ok().put("page", page).put("brisk",i);
     }
 
 

@@ -46,7 +46,7 @@ public class AliUtil {
         service = new AliPayService(aliPayConfigStorage,httpConfigStorage);
     }
 
-    public static Map<String, Object> appOrder(String body, String orderId, BigDecimal price) {
+    public static String appOrder(String body, String orderId, BigDecimal price) {
         PayOrder payOrder = new PayOrder();
         payOrder.setSubject(body);
         payOrder.setBody("");
@@ -55,7 +55,10 @@ public class AliUtil {
         payOrder.setTransactionType(AliTransactionType.APP);
 
 //        String order = UriVariables.getMapToParameters(service.orderInfo(payOrder));
-        Map<String, Object> order = service.orderInfo(payOrder);
+//        Map<String, Object> order = service.orderInfo(payOrder);
+
+//        AliPayConfigStorage payConfigStorage = service.getPayConfigStorage();
+        String order = UriVariables.getMapToParameters(service.orderInfo(payOrder));
         return order;
     }
 

@@ -1,8 +1,6 @@
 package io.renren.modules.banana.generator.controller;
 
-import java.util.Arrays;
-import java.util.Date;
-import java.util.Map;
+import java.util.*;
 
 import io.renren.modules.banana.generator.entity.BananaGoodsEntity;
 import io.renren.modules.banana.generator.service.BananaGoodsService;
@@ -65,11 +63,34 @@ public class BananaGoodsCamiloController {
     @RequestMapping("/save")
     @RequiresPermissions("generator:bananagoodscamilo:save")
     public R save(@RequestBody BananaGoodsCamiloEntity bananaGoodsCamilo){
+
+        if (bananaGoodsCamilo == null) {
+            return R.error("不能为空");
+        }
+
+        if (bananaGoodsCamilo.getTextarea() == null || bananaGoodsCamilo.getTextarea().equals("")) {
+            return R.error("卡密不能为空");
+        }
+
+        String[] split = bananaGoodsCamilo.getTextarea().split("\n");
+
         BananaGoodsEntity bananaGoodsEntity = bananaGoodsService.selectById(bananaGoodsCamilo.getGoodsId());
-        bananaGoodsCamilo.setGoodsName(bananaGoodsEntity.getTitle());
-        bananaGoodsCamilo.setStatus(0);
-        bananaGoodsCamilo.setCreateTime(new Date());
-        bananaGoodsCamiloService.insert(bananaGoodsCamilo);
+
+        List<BananaGoodsCamiloEntity> bananaGoodsEntities = new ArrayList<>();
+        for (String s : split) {
+            BananaGoodsCamiloEntity bananaGoodsCamiloEntity = new BananaGoodsCamiloEntity();
+            bananaGoodsCamiloEntity.setStatus(0);
+            bananaGoodsCamiloEntity.setGoodsId(bananaGoodsEntity.getGoddsid());
+            bananaGoodsCamiloEntity.setGoodsName(bananaGoodsEntity.getTitle());
+            bananaGoodsCamiloEntity.setCreateTime(new Date());
+            bananaGoodsCamiloEntity.setCamilo(s);
+//            bananaGoodsCamiloService.insert(bananaGoodsCamilo);
+            bananaGoodsEntities.add(bananaGoodsCamiloEntity);
+        }
+
+        bananaGoodsCamiloService.insertBatch(bananaGoodsEntities,500);
+//        bananaGoodsCamiloService.insertBatch(bananaGoodsEntities);
+
         return R.ok();
     }
 

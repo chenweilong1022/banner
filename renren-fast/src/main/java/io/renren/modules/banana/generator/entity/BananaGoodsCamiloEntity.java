@@ -1,5 +1,6 @@
 package io.renren.modules.banana.generator.entity;
 
+import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableName;
 
@@ -30,6 +31,11 @@ public class BananaGoodsCamiloEntity implements Serializable {
 	 * 卡密
 	 */
 	private String camilo;
+	/**
+	 * 卡密 \r\n分割
+	 */
+	@TableField(exist = false)
+	private String textarea;
 	/**
 	 * 状态0:未发放1:已发放
 	 */
@@ -114,5 +120,13 @@ public class BananaGoodsCamiloEntity implements Serializable {
 	 */
 	public Date getCreateTime() {
 		return createTime;
+	}
+
+	public String getTextarea() {
+		return textarea;
+	}
+
+	public void setTextarea(String textarea) {
+		this.textarea = textarea;
 	}
 }

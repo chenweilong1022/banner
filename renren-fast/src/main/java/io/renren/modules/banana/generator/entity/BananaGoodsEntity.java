@@ -165,10 +165,16 @@ public class BananaGoodsEntity implements Serializable {
 	}
 
 	public String getStepsStr() {
+		if (steps != null) {
+			return new String(steps);
+		}
 		return stepsStr;
 	}
 
 	public void setStepsStr(String stepsStr) {
+		if (stepsStr != null) {
+			this.steps = stepsStr.getBytes();
+		}
 		this.stepsStr = stepsStr;
 	}
 

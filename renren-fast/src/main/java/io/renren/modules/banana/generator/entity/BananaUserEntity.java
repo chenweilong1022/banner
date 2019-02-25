@@ -1,7 +1,12 @@
 package io.renren.modules.banana.generator.entity;
 
+import cn.hutool.core.date.DateUtil;
+import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableName;
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import io.renren.common.utils.SpringUtils;
+import io.renren.modules.banana.generator.service.BananaUserService;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -31,9 +36,19 @@ public class BananaUserEntity implements Serializable {
 	 */
 	private Date createTime;
 	/**
+	 * 最后一次登录时间
+	 */
+	private Date lastTime;
+	/**
 	 * 平台ios|安卓
 	 */
 	private String platform;
+
+	/**
+	 * 活跃量
+	 */
+	@TableField(exist = false)
+	private Integer brisk;
 
 	/**
 	 * 设置：用户id
@@ -82,5 +97,26 @@ public class BananaUserEntity implements Serializable {
 	 */
 	public String getPlatform() {
 		return platform;
+	}
+
+	public Date getLastTime() {
+		return lastTime;
+	}
+
+	public void setLastTime(Date lastTime) {
+		this.lastTime = lastTime;
+	}
+
+	public Integer getBrisk() {
+
+		return brisk;
+	}
+
+	public void setBrisk(Integer brisk) {
+		this.brisk = brisk;
+	}
+
+	public static void main(String[] args) {
+
 	}
 }
